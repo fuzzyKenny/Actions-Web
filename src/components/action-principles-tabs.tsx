@@ -2,8 +2,10 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   useEffect,
   useEffectEvent,
+  useRef,
   useState,
   type FocusEvent,
+  type TouchEvent,
 } from "react";
 
 type Principle = {
@@ -17,6 +19,8 @@ type ActionPrinciplesTabsProps = {
 };
 
 const AUTO_SWITCH_MS = 3600;
+const SWIPE_DISTANCE_PX = 56;
+const SWIPE_DIRECTION_RATIO = 1.2;
 
 export function ActionPrinciplesTabs({
   principles,
@@ -24,9 +28,18 @@ export function ActionPrinciplesTabs({
 }: ActionPrinciplesTabsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const advanceTab = useEffectEvent(() => {
     setActiveIndex((currentIndex) => (currentIndex + 1) % principles.length);
+  });
+  const stepTab = useEffectEvent((direction: -1 | 1) => {
+    setActiveIndex((currentIndex) => {
+      const nextIndex =
+        (currentIndex + direction + principles.length) % principles.length;
+
+      return nextIndex;
+    });
   });
 
   useEffect(() => {
@@ -70,6 +83,59 @@ export function ActionPrinciplesTabs({
     setActiveIndex(index);
   }
 
+  function handleTouchStart(event: TouchEvent<HTMLDivElement>) {
+    if (principles.length < 2) {
+      return;
+    }
+
+    const touch = event.touches[0];
+
+    if (!touch) {
+      return;
+    }
+
+    swipeStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+    };
+    setPaused(true);
+  }
+
+  function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
+    const swipeStart = swipeStartRef.current;
+    swipeStartRef.current = null;
+    setPaused(false);
+
+    if (!swipeStart || principles.length < 2) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+
+    if (!touch) {
+      return;
+    }
+
+    const deltaX = touch.clientX - swipeStart.x;
+    const deltaY = touch.clientY - swipeStart.y;
+    const horizontalDistance = Math.abs(deltaX);
+    const verticalDistance = Math.abs(deltaY);
+
+    if (
+      horizontalDistance < SWIPE_DISTANCE_PX ||
+      horizontalDistance < verticalDistance * SWIPE_DIRECTION_RATIO
+    ) {
+      return;
+    }
+
+    stepTab(deltaX < 0 ? 1 : -1);
+  }
+
+  function handleTouchCancel() {
+    swipeStartRef.current = null;
+    setPaused(false);
+  }
+
   const activePrinciple = principles[activeIndex];
   const contentMotion = reducedMotion
     ? {}
@@ -99,7 +165,7 @@ export function ActionPrinciplesTabs({
             <button
               key={principle.title}
               type="button"
-              className="relative min-w-0 flex-1 overflow-hidden bg-background px-4 py-4 text-left sm:px-5"
+              className="relative flex min-w-0 flex-1 items-center justify-center overflow-hidden bg-background px-4 py-4 text-center sm:px-5"
               onClick={() => handleTabClick(index)}
               onMouseEnter={() => handleTabHover(index)}
             >
@@ -123,7 +189,13 @@ export function ActionPrinciplesTabs({
         })}
       </div>
 
-      <div className="grid min-h-56 content-between gap-6 px-5 py-5 sm:px-6 sm:py-6">
+      <div
+        className="grid min-h-56 content-between gap-6 px-5 py-5 sm:px-6 sm:py-6"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
+        style={{ touchAction: "pan-y" }}
+      >
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm font-medium uppercase tracking-[0.14em] text-foreground">
             Action principles

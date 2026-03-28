@@ -164,16 +164,6 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
           language={guide.language}
           reducedMotion={reducedMotion}
         />
-        <div className={`flex items-center ${INSTALL_FOOTER_CLASS}`}>
-          <a
-            className="w-fit text-base font-medium text-muted-foreground underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
-            href="https://github.com/fuzzyKenny/Actions-CLI/blob/main/README.md"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Having problems?
-          </a>
-        </div>
       </div>
     );
   }
@@ -363,6 +353,16 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
                     {renderInstallPanel(installPlatform)}
                   </motion.div>
                 </AnimatePresence>
+                <div className={`mt-3 flex items-center ${INSTALL_FOOTER_CLASS}`}>
+                  <a
+                    className="w-fit text-base font-medium text-muted-foreground underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
+                    href="https://github.com/fuzzyKenny/Actions-CLI/blob/main/README.md"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Having problems?
+                  </a>
+                </div>
               </div>
             </div>
           </div>

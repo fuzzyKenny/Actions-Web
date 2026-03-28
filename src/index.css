@@ -127,7 +127,6 @@
   }
   body {
     @apply min-h-screen bg-background text-foreground antialiased;
-    overscroll-behavior-y: none;
   }
   #root {
     @apply min-h-screen bg-background;

@@ -181,6 +181,13 @@
     100% 1px;
 }
 
+.opensource-link:hover .question-link-underline,
+.opensource-link:focus-visible .question-link-underline {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .hover-jiggle-question:hover .question-mark {
     animation: question-jiggle 0.45s ease-in-out;

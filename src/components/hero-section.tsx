@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Copy, Terminal } from "lucide-react";
+import { Check, Copy, MoveUpRight, Terminal } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { RiOpenSourceFill } from "react-icons/ri";
 import { InstallCodeBlock } from "@/components/install-code-block";
@@ -261,10 +261,18 @@ function renderInstallPanel(platform: InstallPlatform, ghost = false) {
                   </span>
                 </motion.button>
               </div>
-              <div className="inline-flex items-center gap-2 text-sm font-medium tracking-[0.08em] text-muted-foreground sm:shrink-0 sm:text-base">
+              <a
+                className="opensource-link group inline-flex items-center gap-2 text-sm font-medium tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 sm:shrink-0 sm:text-base"
+                href="https://github.com/fuzzyKenny/Actions-CLI"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <RiOpenSourceFill className="size-8 sm:size-10" aria-hidden="true" />
-                <span>Opensource</span>
-              </div>
+                <span className="question-link-underline">Opensource</span>
+                <span className="inline-flex h-5 w-5 items-center justify-center text-foreground/85 transition-transform duration-200 group-hover:rotate-45 group-focus-visible:rotate-45 motion-reduce:transition-none">
+                  <MoveUpRight size={16} strokeWidth={2.1} aria-hidden="true" />
+                </span>
+              </a>
             </div>
           </motion.div>
         </div>

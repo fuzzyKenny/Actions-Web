@@ -42,9 +42,25 @@ const INSTALL_GUIDES = {
 
 type InstallPlatform = keyof typeof INSTALL_GUIDES;
 
+function getDetectedInstallPlatform(): InstallPlatform {
+  if (typeof navigator === "undefined") {
+    return "linux-macos";
+  }
+
+  const browserNavigator = navigator as Navigator & {
+    userAgentData?: { platform?: string };
+  };
+  const platform =
+    browserNavigator.userAgentData?.platform ??
+    navigator.platform ??
+    navigator.userAgent;
+
+  return /win/i.test(platform) ? "windows" : "linux-macos";
+}
+
 export function HeroSection({ reducedMotion }: HeroSectionProps) {
   const [installPlatform, setInstallPlatform] =
-    useState<InstallPlatform>("linux-macos");
+    useState<InstallPlatform>(getDetectedInstallPlatform);
 
   const containerVariants = reducedMotion
     ? undefined
@@ -117,7 +133,7 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
         <div className={`flex items-center ${INSTALL_FOOTER_CLASS}`}>
           <a
             className="w-fit text-base font-medium text-muted-foreground underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
-            href="https://github.com/fuzzyKenny/Actions-CLI/issues"
+            href="https://github.com/fuzzyKenny/Actions-CLI/blob/main/README.md"
             target="_blank"
             rel="noreferrer"
           >

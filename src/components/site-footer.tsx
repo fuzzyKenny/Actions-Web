@@ -9,7 +9,7 @@ type SiteFooterProps = {
 
 type FooterLink = {
   label: string;
-  hoverLabel?: string;
+  hoverLabel: string;
   href: string;
   icon: typeof FaGithub;
 };
@@ -31,6 +31,18 @@ const FOOTER_LINKS: FooterLink[] = [
 
 export function SiteFooter({ reducedMotion }: SiteFooterProps) {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const twitterJiggle = reducedMotion
+    ? undefined
+    : {
+        rotate: [0, 12, -10, 7, -5, 3, 0],
+      };
+  const socialTransition = reducedMotion
+    ? { duration: 0 }
+    : {
+        type: "spring" as const,
+        bounce: 0,
+        duration: 0.34,
+      };
   const containerVariants = reducedMotion
     ? undefined
     : {
@@ -84,20 +96,64 @@ export function SiteFooter({ reducedMotion }: SiteFooterProps) {
               return (
                 <motion.a
                   key={link.label}
-                  className="inline-flex items-center gap-2 border border-border/80 px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  layout
+                  className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
                   href={link.href}
                   target={link.href.startsWith("http") ? "_blank" : undefined}
                   rel={link.href.startsWith("http") ? "noreferrer" : undefined}
+                  aria-label={link.label}
+                  transition={socialTransition}
                   onHoverStart={() => setHoveredLink(link.label)}
-                  onHoverEnd={() => setHoveredLink((current) => (current === link.label ? null : current))}
+                  onHoverEnd={() =>
+                    setHoveredLink((current) =>
+                      current === link.label ? null : current,
+                    )
+                  }
                 >
-                  <Icon size={14} aria-hidden="true" />
-                  {link.hoverLabel ? (
-                    <span className="relative inline-flex min-w-[5.75rem] overflow-hidden">
-                      <AnimatePresence initial={false} mode="popLayout">
+                  <motion.span
+                    layout="position"
+                    className="inline-flex h-8 w-8 items-center justify-center"
+                    animate={
+                      reducedMotion
+                        ? undefined
+                        : {
+                            scale: hoveredLink === link.label ? 0.92 : 1,
+                          }
+                    }
+                    transition={socialTransition}
+                  >
+                    {link.label === "Twitter" ? (
+                      <motion.span
+                        className="inline-flex"
+                        animate={twitterJiggle}
+                        style={{ originX: "50%", originY: "-20%" }}
+                        transition={
+                          reducedMotion
+                            ? undefined
+                            : {
+                                duration: 1.4,
+                                ease: [0.32, 0, 0.18, 1],
+                                repeat: Number.POSITIVE_INFINITY,
+                                repeatDelay: 2.2,
+                              }
+                        }
+                      >
+                        <Icon size={16} aria-hidden="true" />
+                      </motion.span>
+                    ) : (
+                      <Icon size={16} aria-hidden="true" />
+                    )}
+                  </motion.span>
+                  <motion.span
+                    layout
+                    className="relative inline-flex min-w-0 overflow-hidden"
+                    transition={socialTransition}
+                  >
+                    <AnimatePresence initial={false} mode="popLayout">
+                      {hoveredLink === link.label ? (
                         <motion.span
-                          key={hoveredLink === link.label ? link.hoverLabel : link.label}
-                          className="inline-flex"
+                          key={link.hoverLabel}
+                          className="inline-flex whitespace-nowrap text-sm"
                           initial={
                             reducedMotion
                               ? undefined
@@ -114,17 +170,14 @@ export function SiteFooter({ reducedMotion }: SiteFooterProps) {
                               : { opacity: 0, scale: 1.04, filter: "blur(4px)" }
                           }
                           transition={{
-                            duration: 0.22,
-                            ease: [0.22, 1, 0.36, 1],
+                            ...socialTransition,
                           }}
                         >
-                          {hoveredLink === link.label ? link.hoverLabel : link.label}
+                          {link.hoverLabel}
                         </motion.span>
-                      </AnimatePresence>
-                    </span>
-                  ) : (
-                    <span>{link.label}</span>
-                  )}
+                      ) : null}
+                    </AnimatePresence>
+                  </motion.span>
                 </motion.a>
               );
             })}

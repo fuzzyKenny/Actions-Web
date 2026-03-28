@@ -1,9 +1,11 @@
 import { startTransition, useEffect, useState, type CSSProperties } from "react";
 import { Check, Copy, Terminal } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { cn } from "@/lib/utils";
 import { codeToTokens, createCssVariablesTheme } from "shiki";
 
 type InstallCodeBlockProps = {
+  className?: string;
   code: string;
   language: "bash" | "powershell";
   reducedMotion: boolean;
@@ -68,6 +70,7 @@ function getDisplayTokens(
 }
 
 export function InstallCodeBlock({
+  className,
   code,
   language,
   reducedMotion,
@@ -122,7 +125,10 @@ export function InstallCodeBlock({
 
   return (
     <div
-      className="relative min-w-0 border border-border/80 bg-background/80"
+      className={cn(
+        "relative min-w-0 overflow-hidden border border-border/80 bg-background/80",
+        className,
+      )}
       style={{
         "--code-background": "transparent",
         "--code-foreground": "var(--foreground)",
@@ -203,7 +209,7 @@ export function InstallCodeBlock({
       </motion.button>
 
       {highlightedLines.length > 0 ? (
-        <pre className="min-w-0 whitespace-pre-wrap break-all px-4 py-4 pr-14 font-mono text-[0.98rem] sm:px-5 sm:pr-16 sm:text-[1.05rem]">
+        <pre className="h-full min-w-0 overflow-y-auto whitespace-pre-wrap break-all px-4 py-4 pr-14 font-mono text-[0.98rem] sm:px-5 sm:pr-16 sm:text-[1.05rem]">
           <code className="grid min-w-0 gap-3">
             {highlightedLines.map((line, index) => {
               const displayLine = getDisplayTokens(line, language);
@@ -232,7 +238,7 @@ export function InstallCodeBlock({
           </code>
         </pre>
       ) : (
-        <pre className="min-w-0 whitespace-pre-wrap break-all px-4 py-4 pr-14 font-mono text-[0.98rem] leading-8 text-foreground sm:px-5 sm:pr-16 sm:text-[1.05rem]">
+        <pre className="h-full min-w-0 overflow-y-auto whitespace-pre-wrap break-all px-4 py-4 pr-14 font-mono text-[0.98rem] leading-8 text-foreground sm:px-5 sm:pr-16 sm:text-[1.05rem]">
           <code className="grid gap-3">
             {code.split("\n").map((line, index) => (
               <span key={`${index}-${line}`} className="flex items-start gap-3">

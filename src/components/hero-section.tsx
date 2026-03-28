@@ -1,17 +1,15 @@
 import { useState } from "react";
-import { Check, Copy, Info } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { InstallCodeBlock } from "@/components/install-code-block";
 import { TextFlip } from "@/components/text-flip/text-flip";
 import heroImageDark from "../assets/act-cli(white).svg";
-import heroImageLight from "../assets/act-cli.svg";
 
 type HeroSectionProps = {
   reducedMotion: boolean;
 };
 
 const INSTALL_CODE_BLOCK_CLASS = "h-[21rem]";
-const INSTALL_DESCRIPTION_CLASS = "min-h-[4.5rem]";
 const INSTALL_FOOTER_CLASS = "min-h-7";
 const HERO_COMMANDS = [
   'add "study dbms"',
@@ -22,7 +20,6 @@ const HERO_COMMANDS = [
 
 const INSTALL_GUIDES = {
   "linux-macos": {
-    description: "Clone the repo, run the installer, then verify:",
     language: "bash",
     installCommands: [
       "git clone https://github.com/fuzzyKenny/Actions-CLI.git",
@@ -33,8 +30,6 @@ const INSTALL_GUIDES = {
     ],
   },
   windows: {
-    description:
-      "Windows uses a manual source setup for now. Install Node.js 18+ and Git, then open PowerShell or Windows Terminal.",
     language: "powershell",
     installCommands: [
       "git clone https://github.com/fuzzyKenny/Actions-CLI.git",
@@ -136,7 +131,6 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
       };
   function renderInstallPanel(platform: InstallPlatform, ghost = false) {
     const guide = INSTALL_GUIDES[platform];
-    const isWindows = platform === "windows";
     const wrapperClassName = "grid gap-3";
 
     return (
@@ -144,20 +138,6 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
         className={wrapperClassName}
         aria-hidden={ghost || undefined}
       >
-        <div className={`flex items-start ${INSTALL_DESCRIPTION_CLASS}`}>
-          {isWindows ? (
-            <div className="flex items-center gap-2 border border-amber-500/20 bg-amber-500/8 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
-              <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center">
-                <Info size={14} strokeWidth={2} aria-hidden="true" />
-              </span>
-              <p className="text-balance leading-6">{guide.description}</p>
-            </div>
-          ) : (
-            <p className="pt-2 text-balance text-sm leading-6 text-muted-foreground">
-              {guide.description}
-            </p>
-          )}
-        </div>
         <InstallCodeBlock
           className={INSTALL_CODE_BLOCK_CLASS}
           code={guide.installCommands.join("\n")}
@@ -180,14 +160,8 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
           <motion.h1 className="m-0 text-foreground" variants={itemVariants}>
             <span className="sr-only">ACT-CLI</span>
             <img
-              className="hidden h-auto w-full max-w-136 dark:block"
+              className="block h-auto w-full max-w-136"
               src={heroImageDark}
-              alt=""
-              aria-hidden="true"
-            />
-            <img
-              className="block h-auto w-full max-w-136 dark:hidden"
-              src={heroImageLight}
               alt=""
               aria-hidden="true"
             />
@@ -295,52 +269,57 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
         <motion.aside className="relative min-w-0" variants={itemVariants}>
           <div className="flex flex-col gap-4">
             <div className="overflow-hidden border border-border/80 bg-background/80">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/80 px-4 py-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    className={`relative overflow-hidden border px-3 py-1.5 text-base font-medium transition-colors ${
-                      installPlatform === "linux-macos"
-                        ? "border-border text-foreground shadow-sm"
-                        : "border-transparent text-muted-foreground hover:border-border/70 hover:text-foreground"
-                    }`}
-                    onClick={() => setInstallPlatform("linux-macos")}
-                  >
-                    {installPlatform === "linux-macos" ? (
-                      <motion.span
-                        className="absolute inset-0 bg-card"
-                        layoutId="install-tab"
-                        transition={{
-                          type: "spring",
-                          bounce: 0,
-                          duration: 0.35,
-                        }}
-                      />
-                    ) : null}
-                    <span className="relative z-10">Linux/macOS</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`relative overflow-hidden border px-3 py-1.5 text-base font-medium transition-colors ${
-                      installPlatform === "windows"
-                        ? "border-border text-foreground shadow-sm"
-                        : "border-transparent text-muted-foreground hover:border-border/70 hover:text-foreground"
-                    }`}
-                    onClick={() => setInstallPlatform("windows")}
-                  >
-                    {installPlatform === "windows" ? (
-                      <motion.span
-                        className="absolute inset-0 bg-card"
-                        layoutId="install-tab"
-                        transition={{
-                          type: "spring",
-                          bounce: 0,
-                          duration: 0.35,
-                        }}
-                      />
-                    ) : null}
-                    <span className="relative z-10">Windows</span>
-                  </button>
+              <div className="border-b border-border/80 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <p className="shrink-0 text-sm font-medium uppercase tracking-[0.14em] text-foreground">
+                    Installation
+                  </p>
+                  <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      className={`relative overflow-hidden border px-3 py-1.5 text-base font-medium transition-colors ${
+                        installPlatform === "linux-macos"
+                          ? "border-border text-foreground shadow-sm"
+                          : "border-transparent text-muted-foreground hover:border-border/70 hover:text-foreground"
+                      }`}
+                      onClick={() => setInstallPlatform("linux-macos")}
+                    >
+                      {installPlatform === "linux-macos" ? (
+                        <motion.span
+                          className="absolute inset-0 bg-card"
+                          layoutId="install-tab"
+                          transition={{
+                            type: "spring",
+                            bounce: 0,
+                            duration: 0.35,
+                          }}
+                        />
+                      ) : null}
+                      <span className="relative z-10">Linux/macOS</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={`relative overflow-hidden border px-3 py-1.5 text-base font-medium transition-colors ${
+                        installPlatform === "windows"
+                          ? "border-border text-foreground shadow-sm"
+                          : "border-transparent text-muted-foreground hover:border-border/70 hover:text-foreground"
+                      }`}
+                      onClick={() => setInstallPlatform("windows")}
+                    >
+                      {installPlatform === "windows" ? (
+                        <motion.span
+                          className="absolute inset-0 bg-card"
+                          layoutId="install-tab"
+                          transition={{
+                            type: "spring",
+                            bounce: 0,
+                            duration: 0.35,
+                          }}
+                        />
+                      ) : null}
+                      <span className="relative z-10">Windows</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -360,7 +339,7 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    Having problems?
+                    Having problems ?
                   </a>
                 </div>
               </div>

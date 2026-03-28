@@ -126,7 +126,7 @@ export function InstallCodeBlock({
   return (
     <div
       className={cn(
-        "relative min-w-0 overflow-hidden border border-border/80 bg-background/80",
+        "relative min-w-0 overflow-hidden bg-muted/55 shadow-[0_8px_24px_rgba(0,0,0,0.14)]",
         className,
       )}
       style={{

@@ -148,6 +148,17 @@ export function ActionPrinciplesTabs({
           ease: [0.22, 1, 0.36, 1] as const,
         },
       };
+  const countMotion = reducedMotion
+    ? {}
+    : {
+        initial: { opacity: 0, y: -8, filter: "blur(4px)" },
+        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+        exit: { opacity: 0, y: 8, filter: "blur(4px)" },
+        transition: {
+          duration: 0.24,
+          ease: [0.22, 1, 0.36, 1] as const,
+        },
+      };
 
   return (
     <div
@@ -201,8 +212,19 @@ export function ActionPrinciplesTabs({
             Action principles
           </p>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            {String(activeIndex + 1).padStart(2, "0")} /{" "}
-            {String(principles.length).padStart(2, "0")}
+            <span className="inline-grid min-w-[2ch]">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={activeIndex}
+                  className="inline-block"
+                  {...countMotion}
+                >
+                  {activeIndex + 1}
+                </motion.span>
+              </AnimatePresence>
+            </span>{" "}
+            /{" "}
+            {principles.length}
           </p>
         </div>
 

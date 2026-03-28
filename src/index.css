@@ -132,3 +132,64 @@
     @apply min-h-screen bg-background;
   }
 }
+
+@keyframes question-jiggle {
+  0%,
+  100% {
+    transform: rotate(0deg) translateX(0);
+  }
+  25% {
+    transform: rotate(9deg) translateX(0.02em);
+  }
+  50% {
+    transform: rotate(-7deg) translateX(-0.02em);
+  }
+  75% {
+    transform: rotate(5deg) translateX(0.01em);
+  }
+}
+
+.question-link-underline {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--border) 0 2px,
+      transparent 2px 6px
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--foreground) 0 2px,
+      transparent 2px 6px
+    );
+  background-position:
+    0 calc(100% - 1px),
+    0 calc(100% - 1px);
+  background-repeat: repeat-x, no-repeat;
+  background-size:
+    100% 1px,
+    0% 1px;
+  padding-bottom: 0.18rem;
+  transition:
+    color 180ms ease,
+    background-size 240ms ease;
+}
+
+.question-link-underline:hover,
+.question-link-underline:focus-visible {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hover-jiggle-question:hover .question-mark {
+    animation: question-jiggle 0.45s ease-in-out;
+    transform-origin: 55% 70%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .question-link-underline {
+    transition: color 180ms ease;
+  }
+}

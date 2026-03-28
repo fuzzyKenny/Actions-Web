@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { type CSSProperties, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -31,6 +31,16 @@ const FOOTER_LINKS: FooterLink[] = [
 
 export function SiteFooter({ reducedMotion }: SiteFooterProps) {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const footerSeparatorStyle: CSSProperties = {
+    backgroundImage: "linear-gradient(to bottom, #a8a29e 1px, transparent 1px)",
+    backgroundPosition: "0 0",
+    backgroundRepeat: "repeat-x",
+    backgroundSize: "20px 20px",
+    maskImage:
+      "repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px)",
+    WebkitMaskImage:
+      "repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px)",
+  };
   const twitterJiggle = reducedMotion
     ? undefined
     : {
@@ -70,7 +80,12 @@ export function SiteFooter({ reducedMotion }: SiteFooterProps) {
       };
 
   return (
-    <footer className="border-t border-border/80 pt-10 pb-4 sm:pt-14 sm:pb-6">
+    <footer className="pt-10 pb-4 sm:pt-14 sm:pb-6">
+      <div
+        className="mb-10 h-px w-full opacity-30 sm:mb-14"
+        style={footerSeparatorStyle}
+        aria-hidden="true"
+      />
       <motion.div
         className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,36rem)] xl:items-end"
         variants={containerVariants}

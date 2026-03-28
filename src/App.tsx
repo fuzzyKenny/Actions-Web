@@ -1,6 +1,8 @@
 import { type CSSProperties, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ActionSection } from "@/components/action-section";
 import { InstallCodeBlock } from "@/components/install-code-block";
+import { SiteFooter } from "@/components/site-footer";
 import heroImageDark from "./assets/act-cli(white).svg";
 import heroImageLight from "./assets/act-cli.svg";
 
@@ -275,6 +277,9 @@ function App() {
             </motion.aside>
           </motion.div>
         </section>
+
+        <ActionSection reducedMotion={reducedMotion} />
+        <SiteFooter reducedMotion={reducedMotion} />
       </main>
     </div>
   );

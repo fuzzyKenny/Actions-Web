@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Info } from "lucide-react";
+import { Check, Copy, Info } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { InstallCodeBlock } from "@/components/install-code-block";
+import { TextFlip } from "@/components/text-flip/text-flip";
 import heroImageDark from "../assets/act-cli(white).svg";
 import heroImageLight from "../assets/act-cli.svg";
 
@@ -12,6 +13,12 @@ type HeroSectionProps = {
 const INSTALL_CODE_BLOCK_CLASS = "h-[21rem]";
 const INSTALL_DESCRIPTION_CLASS = "min-h-[4.5rem]";
 const INSTALL_FOOTER_CLASS = "min-h-7";
+const HERO_COMMANDS = [
+  'add "study dbms"',
+  "break 1",
+  "list",
+  "next",
+] as const;
 
 const INSTALL_GUIDES = {
   "linux-macos": {
@@ -61,6 +68,8 @@ function getDetectedInstallPlatform(): InstallPlatform {
 export function HeroSection({ reducedMotion }: HeroSectionProps) {
   const [installPlatform, setInstallPlatform] =
     useState<InstallPlatform>(getDetectedInstallPlatform);
+  const [heroCommandIndex, setHeroCommandIndex] = useState(0);
+  const [heroCommandCopied, setHeroCommandCopied] = useState(false);
 
   const containerVariants = reducedMotion
     ? undefined
@@ -100,6 +109,31 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
         },
       };
 
+  async function handleHeroCommandCopy() {
+    const command = `act ${HERO_COMMANDS[heroCommandIndex]}`;
+
+    try {
+      await navigator.clipboard.writeText(command);
+      setHeroCommandCopied(true);
+
+      window.setTimeout(() => {
+        setHeroCommandCopied(false);
+      }, 1500);
+    } catch {
+      setHeroCommandCopied(false);
+    }
+  }
+  const textFlipVariants = reducedMotion
+    ? {
+        initial: { opacity: 1, y: 0 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 1, y: 0 },
+      }
+    : {
+        initial: { opacity: 0, y: -8, filter: "blur(4px)" },
+        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+        exit: { opacity: 0, y: 8, filter: "blur(4px)" },
+      };
   function renderInstallPanel(platform: InstallPlatform, ghost = false) {
     const guide = INSTALL_GUIDES[platform];
     const isWindows = platform === "windows";
@@ -177,6 +211,94 @@ export function HeroSection({ reducedMotion }: HeroSectionProps) {
               executable steps, and a cleaner install flow right where you need
               it.
             </p>
+            <div className="relative mt-2 w-full max-w-120 border border-border/80 bg-background/80 px-4 py-3 pr-14">
+              <code className="flex min-h-7 items-center text-sm text-foreground sm:text-[0.95rem]">
+                <span className="font-mono">act&nbsp;</span>
+                <TextFlip
+                  as={motion.span}
+                  className="font-mono"
+                  interval={2.2}
+                  onIndexChange={setHeroCommandIndex}
+                  transition={
+                    reducedMotion
+                      ? { duration: 0 }
+                      : { duration: 0.32, ease: [0.22, 1, 0.36, 1] }
+                  }
+                  variants={textFlipVariants}
+                >
+                  {HERO_COMMANDS.map((command) => (
+                    <span key={command}>{command}</span>
+                  ))}
+                </TextFlip>
+              </code>
+              <motion.button
+                className="absolute top-1/2 right-3 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                type="button"
+                whileTap={reducedMotion ? undefined : { scale: 0.92 }}
+                onClick={handleHeroCommandCopy}
+              >
+                <span
+                  className="inline-flex h-4 w-4 items-center justify-center overflow-hidden"
+                  aria-label={heroCommandCopied ? "Copied" : "Copy"}
+                >
+                  <AnimatePresence initial={false} mode="popLayout">
+                    {heroCommandCopied ? (
+                      <motion.span
+                        key="hero-check"
+                        className="inline-flex h-4 w-4 items-center justify-center"
+                        initial={
+                          reducedMotion
+                            ? undefined
+                            : { opacity: 0, y: 4, filter: "blur(4px)" }
+                        }
+                        animate={
+                          reducedMotion
+                            ? undefined
+                            : { opacity: 1, y: 0, filter: "blur(0px)" }
+                        }
+                        exit={
+                          reducedMotion
+                            ? undefined
+                            : {
+                                opacity: 0,
+                                y: "calc(-100% - 4px)",
+                                filter: "blur(4px)",
+                              }
+                        }
+                        transition={{
+                          duration: 0.24,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                      >
+                        <Check size={14} strokeWidth={2} />
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="hero-copy"
+                        className="inline-flex h-4 w-4 items-center justify-center"
+                        initial={
+                          reducedMotion
+                            ? undefined
+                            : { opacity: 0, y: 4, filter: "blur(4px)" }
+                        }
+                        animate={
+                          reducedMotion
+                            ? undefined
+                            : { opacity: 1, y: 0, filter: "blur(0px)" }
+                        }
+                        exit={reducedMotion ? undefined : { opacity: 0 }}
+                        transition={{
+                          duration: 0.24,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                      >
+                        <Copy size={14} strokeWidth={2} />
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </span>
+              </motion.button>
+            </div>
           </motion.div>
         </div>
 

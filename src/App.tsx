@@ -239,7 +239,9 @@ function App() {
                             {INSTALL_GUIDES["linux-macos"].description}
                           </p>
                           <InstallCodeBlock
-                            code={INSTALL_GUIDES["linux-macos"].installCommands.join("\n")}
+                            code={INSTALL_GUIDES[
+                              "linux-macos"
+                            ].installCommands.join("\n")}
                             language={INSTALL_GUIDES["linux-macos"].language}
                             reducedMotion={reducedMotion}
                           />
@@ -264,7 +266,9 @@ function App() {
                             ))}
                           </div>
                           <InstallCodeBlock
-                            code={INSTALL_GUIDES.windows.installCommands.join("\n")}
+                            code={INSTALL_GUIDES.windows.installCommands.join(
+                              "\n",
+                            )}
                             language={INSTALL_GUIDES.windows.language}
                             reducedMotion={reducedMotion}
                           />
